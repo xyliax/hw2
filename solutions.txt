@@ -1,24 +1,105 @@
+CS642 HW2
+Group HW2 19
+Students: ypei23 vjanarthanan
+
 # Part A:
 
 ## Recovered password
 
+bjacobsen: 	22005597
+ceccio: 	02361267
+
 ## Pseudocode for attack
+
+(start)
+all_possible_passwords <- product({digits,''},8)
+for pw in all_possible_passwords:
+	str <- '{username},{password},{salt}'
+	if sha256(str) matches encypted_data:
+		FIND 1 possible pw!
+(end)
 
 ## Worst case running time
 
+O(n^m), 
+Where n is the size of the charset and m is the maximum length.
+In this case, n is 11, and m is 8.
+
 ## Discussion of current proposal and suggestions for improvement
 
+This method can be cracked at a relatively low cost by brute force.
+Good: Add salts against rainbow table attacks, increasing security.
+Bad: The passwords are too simple, so it is easy to enumerate.
+Improvements: 
+	1. Increase the complexity of user passwords.
+	2. Use other encryption algorithms of higher costs.
+	3. Let the attackers harder to know the salts.
 
 # Part B:
 
 ## Discussion of the current scheme
 
+Vulnerability: 
+The sensitive data are in the first block, which means the attacker
+can modify the sensitive data by modifying the IV vector.
+The attacker can modify the last bytes oof the first block.
+Notice that 'AMOUNT: $  12.99' is 128 bits!
+And the verification tag is easy to guess and easy to fake.
+
+How to replace X with Y in PT1:
+
+IV' = IV xor X xor Y
+E(key, PT1 xor IV) -> CT1
+D(key, CT1) xor IV' = 
+	D(key, E(key, PT1 xor IV)) xor IV xor X xor Y -> PT1'
+E(key, PT1' xor IV xor X xor Y) = E(key, PT1 xor IV)
+PT1' = PT1 xor X xor Y
+As a result, if PT1 is something+X, then PT1' is something+Y!
+
 ## Suggestions for improving the scheme
 
+1. Let the tag be the result of encrypt(text, key), and it will be much 
+more difficult to fake the text.
+2. Fill in the first block using unimportant data, and it will be much
+more difficult to modify the plaintext by bit-flipping in the IV vector.
 
 # Part C:
 
 ## Secret code
 
+Program outputs:
+
+b'Congrats! Your Secret_Code=8062C9CE-2e24b6c6'
+b'The code is valid!'
+
+Secret code is '8062C9CE-2e24b6c6'
+Note that the secret code changes based on each request.
+
 ## Explanation
+
+Generate X at the client side, and send GX to the server.
+The server will send back GY, and both sides should know GXY.
+Since the code is encrypted using GXY, the client can decrypt the code.
+
+# Part Extra -> ec_pwcrack.py
+
+## Recovered password
+
+Cheeseisgood!
+
+## Pseudocode for attack
+
+(start)
+for pw in human_pw_dictionary:
+	if pw is a valid password:
+		if scrypt(...) matches encrypted_data:
+			FIND 1 possible pw!
+(end)
+
+## Approach
+
+1. Download 'crackstation-human-only.txt' as the dictionary.
+2. Preprocess the dictionary to make a smaller one (Optional).
+3. Filter all invalid passwords (at least 6 digits and 3 classes).
+4. Enumerate the rest passwords (about 2 million) and check.
 
