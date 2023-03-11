@@ -85,7 +85,6 @@ sc = m.split(b'=', 1)[1]
 
 r = requests.get(URL + '/verify', params = {
     'code': sc
-    })
+})
 
 print(r.content)
-

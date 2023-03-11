@@ -28,8 +28,8 @@ I authorized the above amount to be transferred to the account #51779-31226
 held by a Wisc student at the National Bank of the Cayman Islands.
 """
 
-real_amount = '  12.99'
-fake_amount = '9999999'
+real_amount = 'AMOUNT: $  12.99'
+fake_amount = 'AMOUNT: $9999999'
 
 A = int(real_amount.encode().hex(), 16)
 B = int(fake_amount.encode().hex(), 16)
