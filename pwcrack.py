@@ -1,5 +1,22 @@
 # usr/bin/env python3
 
+'''
+CS642 HW2
+Group HW2 19 ypei23 vjanarthanan
+
+How to run: 'python3 pwcrack.py'
+This program cracks the two users specified in the tasks.
+If you want to crack other's, modify line 26, 27, 28.
+
+After at least 1 passwords are found for all users, the program will stop
+and ask whether you want to continue and find more possibilities.
+Due to the property of hash functions, there is a very small chance to 
+have different passwords mapped to the same text.
+
+Output format: several lines in red, each line is [username] -> [password]
+'''
+
+
 import hashlib
 from itertools import product
 import time

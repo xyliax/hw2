@@ -54,10 +54,21 @@ FORMAT = PublicFormat.CompressedPoint
 
 #### Your code starts here #####
 
-r = requests.get(URL + '/dh', params = {
-    'gx': 1
+x = ec.generate_private_key(EC_CURVE)
+gx = x.public_key()
+gx_str = base64.urlsafe_b64encode(gx.public_bytes(ENCODING, FORMAT))
+
+r_dh = requests.get(URL + '/dh', params = {
+    'gx': gx_str
     })
 
+gy_str = r_dh.json()['gy']
+gy_bin = base64.urlsafe_b64decode(gy_str)
+gy = ec.EllipticCurvePublicKey.from_encoded_point(EC_CURVE, gy_bin)
+
+gxy = x.exchange(ec.ECDH(), gy)
+
+c = r_dh.json()['c']
 
 #### Don't change the code below ####
 k = base64.urlsafe_b64encode(HKDF(
@@ -74,7 +85,6 @@ sc = m.split(b'=', 1)[1]
 
 r = requests.get(URL + '/verify', params = {
     'code': sc
-    })
+})
 
 print(r.content)
-
